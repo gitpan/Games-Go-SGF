@@ -1,0 +1,6 @@
+Revision history for Perl extension Games::Go::SGF.
+
+0.01  Sun Sep 30 12:54:47 2001
+	- original version; created by h2xs 1.21 with options
+		-XA -n Games::Go::SGF
+
