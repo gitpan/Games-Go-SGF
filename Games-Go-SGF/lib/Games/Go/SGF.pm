@@ -10,7 +10,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $AUTOLOAD;
 
 use Parse::RecDescent;
@@ -101,7 +101,7 @@ my $grammar = q{
         File : GameTree eofile { $return = $item[1] }
     GameTree : '(' Node(s) GameTree(s?) ')' {
                   $return = $item[2];
-                  push @{$return}, bless( $item[3], 'Games::Go::SGF::Variation') if (@{$item[3]})
+                  push @{$return} , bless( $item[3], 'Games::Go::SGF::Variation') if (@{$item[3]})
                 }
         Node : ';' Property(s) {
                   $return = bless({Games::Go::SGF::unload()}, 'Games::Go::SGF::Node')
@@ -140,7 +140,7 @@ sub new {
     bless $a, "Games::Go::SGF";
     _sew($a);
     return $a;
-} 
+}
 
 sub _sew {
     my $a = shift;
@@ -257,7 +257,7 @@ by default, follow the mainline.
 
 The parser will report 'bad go sgf' with an explanation if:
 
-= over 2
+=over 2
 
 =item *
 
