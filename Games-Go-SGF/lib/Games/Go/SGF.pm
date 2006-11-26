@@ -10,7 +10,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $AUTOLOAD;
 
 use Parse::RecDescent;
@@ -191,6 +191,8 @@ our $AUTOLOAD;
 
 sub move { my $node = shift; $node->{B} || $node->{W} }
 
+sub color { colour(shift) }
+
 sub colour {
   my $node = shift;
   if (exists($node->{B})){'B'}
@@ -221,7 +223,6 @@ sub AUTOLOAD {
 
 1;
 __END__
-# Below is stub documentation for your module. You better edit it!
 
 =head1 NAME
 
@@ -254,13 +255,23 @@ to get the first node in the n'th variation, and C<variations>
 to retrieve an array of variations. C<< $variation->move >> will,
 by default, follow the mainline.
 
-The parser will report 'bad sgf' with an explanation if:
+The parser will report 'bad go sgf' with an explanation if:
 
-there are certain duplicated property identifiers (tags) 
-within a file (eg SZ),
-there are certain duplicated tags within a node (eg B),
-there is a certain mixture of tags within a node
-eg ( (B or W) and (AB or AW or AE) )
+= over 2
+
+=item *
+
+there are certain duplicated property identifiers (tags) within a file (eg SZ)
+
+=item *
+
+there are certain duplicated tags within a node (eg B)
+
+=item *
+
+there is a certain mixture of tags within a node eg ( (B or W) and (AB or AW or AE) )
+
+=back
 
 The parser will also quietly re-organise tags within a node if it is badly formed.
 eg CR[aa]CR[ab] becomes CR[aa]:[ab]
@@ -268,44 +279,42 @@ eg CR[aa]CR[ab] becomes CR[aa]:[ab]
 Some property value validation checks are made, some of which are Go specific.
 For example B[ab] is OK, but B[ab:ac] will not parse.
 
-3. Added AUTOLOAD functions to SGF::Node and SGF, so property values can be 
-found from the sgf tag. eg. $sgf->RU.
-
-=head1 METHODS
-
 =head2 General use
 
-The value of any property can be obtained using the sgf property identifier.
+The value of any property can be obtained using its sgf tag.
 For example, to get the value of 'RU', use
 
-    my $rules = $sgf->RU
+    my $rules = $sgf->RU;
 
 In addition, the following aliases are available:
 
-    $sgf->date  # equivalent to $sgf->DT
-    $sgf->time  # equivalent to $sgf->DT
-    $sgf->white # equivalent to $sgf->PW
-    $sgf->black # equivalent to $sgf->PB
-    $sgf->size  # equivalent to $sgf->SZ
-    $sgf->komi  # equivalent to $sgf->KM
+    $sgf->date;  # equivalent to $sgf->DT
+    $sgf->time;  # equivalent to $sgf->DT
+    $sgf->white; # equivalent to $sgf->PW
+    $sgf->black; # equivalent to $sgf->PB
+    $sgf->size;  # equivalent to $sgf->SZ
+    $sgf->komi;  # equivalent to $sgf->KM
 
 Properties found in the root of the sgf file (all those listed above for example)
 are available to be read regardless of the current node, other properties are node
 specific ($sgf->B for example)
+
+=head1 METHODS
 
 =head2 tags
 
 The tags method returns an array containing the properties that were
 found in the current node.
 
-    print $sgf->tags
+    print $sgf->tags;
 
-=head2 colour
+=head2 colour (aka color)
 
 The colour method returns 'B', 'W', or 'None', depending on whether the tag B, or W,
 or neither of them was found in the current node.
 
-    print $sgf->colour
+    print $sgf->colour;
+    print $sgf->color; # another way to spell colour
 
 =head1 TODO
 
@@ -313,9 +322,12 @@ The ability to write as well as read SGF files.
 Could be faster if validation was rewritten somehow.
 Make variations easier to navigate.
 
-=head1 AUTHOR
+=head1 AUTHOR (version 0.01)
 
 Simon Cozens C<simon@cpan.org>
+
+=head1 MODIFICATIONS (version 0.02)
+
 Daniel Gilder
 
 =head1
