@@ -28,10 +28,18 @@ found from the sgf tag. eg. $sgf->RU.
 
 6. Added some validation checks to the values associated with some tags.
 
-0.03  Sat Nov 24 2006
+0.03  Sat Nov 25 2006
 	- created by h2xs 1.23 with options
 		-XO -n Games::Go::SGF
 Changes:
 
 1. Added $sgf->color as an alias for $sgf->colour
 
+0.05  Tue Nov 28 2006
+	- created by h2xs 1.23 with options
+		-XO -n Games::Go::SGF
+Changes:
+
+1. Tag values can be set
+
+2. savesgf method will save as an sgf file
