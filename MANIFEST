@@ -1,10 +1,7 @@
 Changes
-MANIFEST
 Makefile.PL
+MANIFEST
 README
+t/Games-Go-SGF.t
 lib/Games/Go/SGF.pm
-t/00-load.t
-t/boilerplate.t
-t/pod-coverage.t
-t/pod.t
 META.yml                                 Module meta-data (added by MakeMaker)
