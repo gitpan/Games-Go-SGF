@@ -3,6 +3,10 @@ package Games::Go::SGF;
 use 5.006;
 use strict;
 use warnings;
+use Carp;
+use IO::File;
+use English;
+use Parse::RecDescent;
 
 require Exporter;
 
@@ -10,10 +14,8 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our $AUTOLOAD;
-
-use Parse::RecDescent;
 
 {
   my %nodehash;
@@ -132,14 +134,15 @@ my $grammar = q{
       eofile : /^\Z/
 };
 
-use Carp;
-
 sub new {
   my ($class, $file, $grammarflag) = @_;
   my $grammar = _choosegrammar($grammarflag);
-  my $parser = new Parse::RecDescent $grammar or die "Bad grammar!\n";
-  my $a = $parser->File($file);
-  defined $a or die "Bad Go sgf\n";
+  my $parser = new Parse::RecDescent $grammar or croak "Bad grammar!\n";
+  my $fh = IO::File->new($file, '<') or croak $ERRNO;
+  my $slurpfile = do { local $/; <$fh> };
+  $fh->close or croak $ERRNO;
+  my $a = $parser->File($slurpfile);
+  defined $a or croak "Bad Go sgf\n";
   bless $a, 'Games::Go::SGF';
   _sew($a);
   return $a;
@@ -377,14 +380,13 @@ Games::Go::SGF - Parse and dissect Standard Go Format files
 =head1 SYNOPSIS
 
   use Games::Go::SGF;
-  my $sgf = new Games::Go::SGF($sgfdata);
+
+  my $file = shift;
+  my $sgf = new Games::Go::SGF($file);
+  print $sgf->getsgf;
   print "Game played on ".$sgf->date."\n";
   print $sgf->white. " (W) vs. ".$sgf->black." (B)\n";
   print "Board size: ".$sgf->size.". Komi: ".$sgf->komi."\n";
-
-  while ($move = $sgf->move($move_no++)) {
-    print "$move_no: ".$move->move,"\n";
-  }
 
 =head1 DESCRIPTION
 
@@ -476,11 +478,6 @@ For example
 Move the parser on to the next node.
 
     $sgf($move_no++);
-
-The tags method returns an array containing the properties that were
-found in the current node.
-
-    print $sgf->tags;
 
 =head2 tags
 
