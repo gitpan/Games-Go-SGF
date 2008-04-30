@@ -14,7 +14,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our $AUTOLOAD;
 
 {
@@ -97,6 +97,8 @@ our $AUTOLOAD;
 
   sub refresh {
     %onersfound = ();
+    %nodehash = ();
+    %duplicates = ();
   }
 
 }
@@ -502,13 +504,12 @@ To delete a tag in the current node;
 
 =head2 getsgf
 
-To return the current variation tree in sgf;
+To return the file in sgf;
 
     print $sgf->getsgf;
 
 =head1 TODO
 
-Could be faster if property validation was rewritten somehow.
 Make variations easier to navigate.
 Make validation game specific.
 Output to xml?
