@@ -14,7 +14,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our $AUTOLOAD;
 
 {
@@ -106,7 +106,7 @@ our $AUTOLOAD;
 }
 
 my $grammar = q{
-        File : GameTree eofile { $return = $item[1]; Games::Go::SGF::refresh }
+        File : GameTree { $return = $item[1]; Games::Go::SGF::refresh }
     GameTree : '(' Node(s) GameTree(s?) ')' {
                   $return = $item[2];
                   push @{$return} , bless( $item[3], 'Games::Go::SGF::Variation') if (@{$item[3]})
@@ -135,7 +135,6 @@ my $grammar = q{
      Integer : /\[\d+\]/
         Real :/\[\d+\.\d+\]|\[\d+\]/
       Colour : /\[[WB]\]/
-      eofile : /^\Z/
 };
 
 sub new {
