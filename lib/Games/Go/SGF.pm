@@ -14,7 +14,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw() ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 our $AUTOLOAD;
 
 {
@@ -29,9 +29,11 @@ our $AUTOLOAD;
     my ($ident, $values) = @_;
     if (exists($nodehash{tags})) {
       if ($nodehash{tags} !~ /,$ident,/) {
-        $nodehash{tags} = join (',', $nodehash{tags}, $ident);
+        $nodehash{tags} .= $ident.',';
       }
-    } else {$nodehash{tags} = $ident}
+    } else {
+      $nodehash{tags} = ','.$ident.','
+    }
 
     if (exists($nodehash{$ident})){
       $nodehash{$ident} = join (',', $nodehash{$ident}, map (substr($_,1,-1), @{$values}));
@@ -423,7 +425,7 @@ there is a certain mixture of tags within a node eg ( (B or W) and (AB or AW or 
 =back
 
 The parser will also quietly re-organise tags within a node if it is badly formed.
-eg CR[aa]CR[ab] becomes CR[aa]:[ab]
+eg CR[aa]CR[ab] becomes CR[aa][ab]
 
 Some property value validation checks are made, some of which are Go specific.
 For example B[ab] is OK, but B[ab:ac] will not parse.
